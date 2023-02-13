@@ -1,0 +1,18 @@
+runcmd:
+  # INSTALL_K3S_VERSION=v1.24.7+k3s1 for Consul-K8S <=0.49.0 compatibility
+  - curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.24.7+k3s1 sh -
+  - mkdir -p /home/ubuntu/.kube/
+  - cp /etc/rancher/k3s/k3s.yaml /home/ubuntu/.kube/config
+  - chown ubuntu:ubuntu /home/ubuntu/.kube/config
+  - k3s completion bash > /etc/bash_completion.d/k3s
+  - echo "export KUBECONFIG=/home/ubuntu/.kube/config" | tee -a /home/ubuntu/.bashrc
+  - echo "alias k=\'kubectl\'" | tee -a /home/ubuntu/.bashrc
+  - sudo apt install jq -y
+
+  - curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  - helm completion bash > /etc/bash_completion.d/helm
+  - runuser -l ubuntu -c "helm repo add hashicorp https://helm.releases.hashicorp.com"
+
+  - kubectl completion bash > /etc/bash_completion.d/kubectl
+  - curl -sL "https://releases.hashicorp.com/vault-k8s/1.1.0/vault-k8s_1.1.0_linux_$( [ $(uname -m) = aarch64 ] && echo arm64 || echo amd64).zip" | zcat > /usr/local/bin/vault-k8s
+  - chmod +x /usr/local/bin/vault-k8s
